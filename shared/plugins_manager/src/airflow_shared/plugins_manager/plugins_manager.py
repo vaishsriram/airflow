@@ -112,6 +112,9 @@ class ExternalViewDict(_BaseUIDict):
 
     href: str
     destination: NotRequired[BaseDestinationLiteral]
+    # Whether the link opens in a new browser tab. Defaults to True (current behavior)
+    # when omitted; set to False to navigate in the current tab instead.
+    open_in_new_tab: NotRequired[bool | None]
 
 
 class ReactAppDict(_BaseUIDict):

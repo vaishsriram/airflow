@@ -43,6 +43,10 @@ export const PluginMenuItem = ({
   const { colorMode } = useColorMode();
   const isExternalView = "href" in rest;
   const href = isExternalView ? (rest as ExternalViewResponse).href : undefined;
+  // Only read on external views; absent there (e.g. a plugin predating this field) or on a
+  // react app (where the property simply doesn't exist) both default to the historical
+  // behavior of opening in a new tab.
+  const openInNewTab = (rest as ExternalViewResponse).open_in_new_tab ?? true;
 
   const displayIcon = colorMode === "dark" && typeof iconDarkMode === "string" ? iconDarkMode : icon;
   const pluginIcon =
@@ -62,6 +66,7 @@ export const PluginMenuItem = ({
         icon={LuPlug}
         isExternal={isExternal}
         key={name}
+        openInNewTab={openInNewTab}
         pluginIcon={pluginIcon}
         title={name}
         to={isExternal ? href : `plugin/${urlRoute}`}
@@ -77,13 +82,13 @@ export const PluginMenuItem = ({
           fontSize="sm"
           href={href}
           outline="none"
-          rel="noopener noreferrer"
-          target="_blank"
+          rel={openInNewTab ? "noopener noreferrer" : undefined}
+          target={openInNewTab ? "_blank" : undefined}
           width="100%"
         >
           {pluginIcon}
           <Box flex="1">{name}</Box>
-          <Icon as={FiExternalLink} boxSize={4} color="fg.muted" />
+          {openInNewTab ? <Icon as={FiExternalLink} boxSize={4} color="fg.muted" /> : undefined}
         </Link>
       ) : (
         <RouterLink style={{ outline: "none" }} to={`plugin/${urlRoute}`}>

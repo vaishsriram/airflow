@@ -83,7 +83,9 @@ def logout(
     # only thing that ends the browser's session.
     secure = request.base_url.scheme == "https" or bool(conf.get("api", "ssl_cert", fallback=""))
     cookie_path = get_cookie_path()
-    response = RedirectResponse(auth_manager.get_url_logout() or auth_manager.get_url_login())
+    response = RedirectResponse(
+        auth_manager.get_url_logout() or auth_manager.get_url_post_logout() or auth_manager.get_url_login()
+    )
     response.delete_cookie(
         key=COOKIE_NAME_JWT_TOKEN,
         path=cookie_path,

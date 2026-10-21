@@ -110,6 +110,8 @@ class ExternalViewResponse(BaseUIResponse):
 
     href: str
     destination: BaseDestinationLiteral = "nav"
+    # Whether the link opens in a new browser tab. True preserves the historical behavior.
+    open_in_new_tab: bool = True
 
 
 class ReactAppResponse(BaseUIResponse):

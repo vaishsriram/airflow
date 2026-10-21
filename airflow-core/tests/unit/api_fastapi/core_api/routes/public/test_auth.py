@@ -43,6 +43,7 @@ class TestAuthEndpoint:
         auth_manager_mock = MagicMock()
         auth_manager_mock.get_url_login.return_value = AUTH_MANAGER_LOGIN_URL
         auth_manager_mock.get_url_logout.return_value = AUTH_MANAGER_LOGOUT_URL
+        auth_manager_mock.get_url_post_logout.return_value = None
         test_client.app.state.auth_manager = auth_manager_mock
 
 
@@ -130,6 +131,28 @@ class TestLogout(TestAuthEndpoint):
         if delete_cookies:
             cookies = response.headers.get_list("set-cookie")
             assert any(f"{COOKIE_NAME_JWT_TOKEN}=" in c for c in cookies)
+
+    def test_logout_redirects_to_post_logout_url_when_configured(self, test_client):
+        """When get_url_logout returns None and a post-logout URL is configured, redirect there."""
+        post_logout_url = "https://my-portal.example.com"
+        test_client.app.state.auth_manager.get_url_logout.return_value = None
+        test_client.app.state.auth_manager.get_url_post_logout.return_value = post_logout_url
+
+        response = test_client.get("/auth/logout", follow_redirects=False)
+
+        assert response.status_code == 307
+        assert response.headers["location"] == post_logout_url
+
+    def test_logout_sso_url_takes_precedence_over_post_logout_url(self, test_client):
+        """When get_url_logout is set, it takes precedence over post_logout_url."""
+        sso_logout_url = "http://localhost/auth/some_logout_url"
+        test_client.app.state.auth_manager.get_url_logout.return_value = sso_logout_url
+        test_client.app.state.auth_manager.get_url_post_logout.return_value = "https://my-portal.example.com"
+
+        response = test_client.get("/auth/logout", follow_redirects=False)
+
+        assert response.status_code == 307
+        assert response.headers["location"] == sso_logout_url
 
     def test_logout_with_invalid_token_does_not_raise(self, test_client):
         """Test that logout with an invalid token does not raise."""

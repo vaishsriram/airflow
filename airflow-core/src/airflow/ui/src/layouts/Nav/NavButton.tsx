@@ -39,6 +39,9 @@ type NavButtonProps = {
   // Extra routes that should also mark this button active, on top of `to` (e.g. the Dags button
   // should also highlight for the standalone dag runs and task instances routes).
   readonly matchPaths?: Array<string>;
+  // Only meaningful when isExternal is true. Defaults to true (open in a new tab), matching the
+  // historical behavior of every external nav link.
+  readonly openInNewTab?: boolean;
   readonly pluginIcon?: ReactNode;
   readonly title: string;
   // A single destination renders the button as a link; an array only affects isActive matching
@@ -50,6 +53,7 @@ export const NavButton = ({
   icon,
   isExternal = false,
   matchPaths = noMatchPaths,
+  openInNewTab = true,
   pluginIcon,
   title,
   to,
@@ -116,7 +120,11 @@ export const NavButton = ({
   if (isExternal) {
     return (
       <Button {...commonButtonProps} asChild>
-        <a href={to} rel="noopener noreferrer" target="_blank">
+        <a
+          href={to}
+          rel={openInNewTab ? "noopener noreferrer" : undefined}
+          target={openInNewTab ? "_blank" : undefined}
+        >
           {pluginIcon ?? <Icon as={icon} boxSize={5} />}
           <Box {...commonLabelProps}>{title}</Box>
         </a>

@@ -1629,7 +1629,8 @@ export type ExternalViewResponse = {
     applies_to?: PluginAppliesToResponse | null;
     href: string;
     destination?: 'nav' | 'dag' | 'dag_run' | 'task' | 'task_instance' | 'asset' | 'base';
-    [key: string]: unknown | string;
+    open_in_new_tab?: boolean;
+    [key: string]: unknown | string | boolean;
 };
 
 export type destination = 'nav' | 'dag' | 'dag_run' | 'task' | 'task_instance' | 'asset' | 'base';

@@ -1792,6 +1792,20 @@ api:
       type: string
       example: "https://my-airflow.company.com"
       default: ~
+    logout_redirect_url:
+      description: |
+        URL to redirect the browser to after a successful logout. When set, the user is sent
+        here instead of the Airflow login page. Useful when an SSO provider (e.g. Knox, Okta,
+        Azure AD) would otherwise re-authenticate the user immediately upon reaching the login
+        page. Custom auth managers can also use this value as the post-logout redirect URI they
+        pass to the identity provider during the SSO logout flow.
+
+        When left empty the default behavior applies: the user is redirected to the Airflow
+        login page.
+      version_added: 3.4.1
+      type: string
+      example: "https://my-company-portal.example.com"
+      default: ""
     host:
       description: |
         The ip specified when starting the api server

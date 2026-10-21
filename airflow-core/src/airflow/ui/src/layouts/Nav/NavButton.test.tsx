@@ -107,6 +107,25 @@ describe("NavButton", () => {
       expect(link).toHaveAttribute("target", "_blank");
       expect(link).toHaveAttribute("rel", "noopener noreferrer");
     });
+
+    it("renders without target or rel when openInNewTab is false", () => {
+      render(
+        <NavButton
+          icon={FiHome}
+          isExternal
+          openInNewTab={false}
+          title="Icon Name"
+          to="https://example.com"
+        />,
+        { wrapper: wrapperAt("/") },
+      );
+
+      const link = screen.getByRole("link", { name: "Icon Name" });
+
+      expect(link).toHaveAttribute("href", "https://example.com");
+      expect(link).not.toHaveAttribute("target");
+      expect(link).not.toHaveAttribute("rel");
+    });
   });
 
   describe("matchPaths", () => {

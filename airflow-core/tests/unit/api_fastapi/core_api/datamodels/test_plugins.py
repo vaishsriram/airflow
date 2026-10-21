@@ -20,7 +20,7 @@ from typing import Literal
 
 import pytest
 
-from airflow.api_fastapi.core_api.datamodels.plugins import ReactAppResponse
+from airflow.api_fastapi.core_api.datamodels.plugins import ExternalViewResponse, ReactAppResponse
 
 
 @pytest.mark.parametrize("destination", ["dag_overview", "task_overview"])
@@ -30,3 +30,15 @@ def test_react_app_accepts_overview_destination(
     react_app = ReactAppResponse(name="overview", bundle_url="/overview.js", destination=destination)
 
     assert react_app.destination == destination
+
+
+def test_external_view_open_in_new_tab_defaults_to_true() -> None:
+    external_view = ExternalViewResponse(name="my view", href="https://example.com")
+
+    assert external_view.open_in_new_tab is True
+
+
+def test_external_view_open_in_new_tab_round_trips_false() -> None:
+    external_view = ExternalViewResponse(name="my view", href="https://example.com", open_in_new_tab=False)
+
+    assert external_view.open_in_new_tab is False

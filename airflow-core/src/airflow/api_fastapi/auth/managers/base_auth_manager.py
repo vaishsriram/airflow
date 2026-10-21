@@ -221,6 +221,19 @@ class BaseAuthManager(Generic[T], LoggingMixin, metaclass=ABCMeta):
         """
         return None
 
+    def get_url_post_logout(self) -> str | None:
+        """
+        Return the URL to redirect to after the full logout cycle completes.
+
+        Reads ``[api] logout_redirect_url`` from the Airflow config. When set, the user lands
+        here instead of the Airflow login page after logout.
+
+        Auth managers that drive an SSO logout flow (e.g. Knox, Keycloak) should pass this URL
+        as the post-logout redirect URI to the identity provider so the browser ends up here
+        rather than on the Airflow login page, which could trigger automatic re-authentication.
+        """
+        return conf.get("api", "logout_redirect_url", fallback="") or None
+
     def refresh_user(self, *, user: T) -> T | None:
         """
         Refresh the user if needed.

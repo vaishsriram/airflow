@@ -5978,6 +5978,11 @@ export const $ExternalViewResponse = {
             enum: ['nav', 'dag', 'dag_run', 'task', 'task_instance', 'asset', 'base'],
             title: 'Destination',
             default: 'nav'
+        },
+        open_in_new_tab: {
+            type: 'boolean',
+            title: 'Open In New Tab',
+            default: true
         }
     },
     additionalProperties: true,

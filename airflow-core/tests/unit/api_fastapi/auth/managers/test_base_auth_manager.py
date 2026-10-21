@@ -270,6 +270,13 @@ class TestBaseAuthManager:
     def test_get_url_logout_return_none(self, auth_manager):
         assert auth_manager.get_url_logout() is None
 
+    def test_get_url_post_logout_returns_none_when_not_configured(self, auth_manager):
+        assert auth_manager.get_url_post_logout() is None
+
+    @conf_vars({("api", "logout_redirect_url"): "https://my-portal.example.com"})
+    def test_get_url_post_logout_returns_configured_url(self, auth_manager):
+        assert auth_manager.get_url_post_logout() == "https://my-portal.example.com"
+
     def test_get_extra_menu_items_return_empty_list(self, auth_manager):
         assert auth_manager.get_extra_menu_items(user=BaseAuthManagerUserTest(name="test")) == []
 
